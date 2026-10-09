@@ -11,7 +11,7 @@ const select=`SELECT t.*, (SELECT COUNT(*) FROM tournament_entries e WHERE e.tou
 async function seedHalloween(database){
   await database.prepare('INSERT OR IGNORE INTO tournaments (id,title,start_at,venue,capacity,published,registration_open,details,updated) VALUES (?,?,?,?,?,?,?,?,?)').bind('halloween-rapid-2026-sample','Halloween Rapid',Date.parse('2026-10-31T19:00:00+08:00'),'To be confirmed',32,1,1,JSON.stringify({fee:'To be confirmed',format:'Swiss (proposed)',timeControl:'10+5 (proposed)',rounds:5,checkIn:Date.parse('2026-10-31T18:30:00+08:00'),eligibility:'All levels welcome (proposed)',rules:'PROVISIONAL EVENT — the date, time, format and capacity are proposed. Venue, entry fee and final rules are to be confirmed. Registration is open; entries are saved for the organisers to manage. Check this page for confirmed details before making travel plans.',prizes:'To be confirmed',map:'',pairings:'',results:''}),Date.now()).run();
 }
-function present(t){return {...t,details:JSON.parse(t.details),available:Math.max(0,t.capacity-t.registered),canRegister:Boolean(t.published&&t.registration_open&&t.start_at>Date.now()&&t.registered<t.capacity)}}
+function present(t){const details=JSON.parse(t.details);return {...t,details,available:Math.max(0,t.capacity-t.registered),canRegister:Boolean(t.published&&t.registration_open&&t.start_at>Date.now()&&t.registered<t.capacity&&!details.manuallyFull&&(!details.registrationOpens||details.registrationOpens<=Date.now()))}}
 
 export async function tournamentAPI(req,env,path){
   const url=new URL(req.url),database=db(env);
@@ -24,7 +24,8 @@ export async function tournamentAPI(req,env,path){
     const now=Date.now();
     const result=await database.prepare(`INSERT OR IGNORE INTO tournament_entries (id,tournament_id,name,email,phone,rating,created)
       SELECT ?,t.id,?,?,?,?,? FROM tournaments t WHERE t.id=? AND t.published=1 AND t.registration_open=1 AND t.start_at>?
-      AND (SELECT COUNT(*) FROM tournament_entries e WHERE e.tournament_id=t.id)<t.capacity`).bind(crypto.randomUUID(),name,email,phone||null,rating,now,b.tournamentId,now).run();
+      AND COALESCE(json_extract(t.details,'$.manuallyFull'),0)=0 AND COALESCE(json_extract(t.details,'$.registrationOpens'),0)<=?
+      AND (SELECT COUNT(*) FROM tournament_entries e WHERE e.tournament_id=t.id)<t.capacity`).bind(crypto.randomUUID(),name,email,phone||null,rating,now,b.tournamentId,now,now).run();
     if(!result.meta?.changes)return json({error:'Registration was not added. Places may be full, registration may have closed, or this email may already be registered. Contact the club if you need help.'},409);
     return json({message:'Your place is registered. Please arrive at the listed check-in time. Any entry fee is handled by the organiser; no payment was taken here.'},201);
   }
@@ -50,6 +51,7 @@ export async function tournamentAPI(req,env,path){
     b=await req.json();title=field(b.title,'title',120,true);venue=field(b.venue,'venue',200,true);startAt=malaysiaTime(b.start);capacity=Number(b.capacity);
     if(!Number.isInteger(capacity)||capacity<1||capacity>1000)throw Error('Capacity must be between 1 and 1,000.');
     const d=b.details||{};details={fee:field(d.fee,'entry fee',120,true),format:field(d.format,'format',120,true),timeControl:field(d.timeControl,'time control',120,true),rounds:Number(d.rounds),checkIn:d.checkIn?malaysiaTime(d.checkIn):null,eligibility:field(d.eligibility,'eligibility',500),rules:field(d.rules,'rules',5000),prizes:field(d.prizes,'prizes',1000),map:link(d.map),pairings:link(d.pairings),results:link(d.results)};
+    details.manuallyFull=d.manuallyFull===true;details.registrationOpens=d.registrationOpens?malaysiaTime(d.registrationOpens):null;if(details.registrationOpens&&details.registrationOpens>=startAt)throw Error('Registration must open before the tournament starts.');
     details.winner=field(d.winner,'winner name',120);details.runnerUp=field(d.runnerUp,'runner-up name',120);details.thirdPlace=field(d.thirdPlace,'third-place name',120);details.news=field(d.news,'tournament news',3000);
     if(d.photos!==undefined&&!Array.isArray(d.photos))throw Error('Choose up to eight tournament photos.');
     details.photos=(d.photos||[]).map(p=>{if(!p||!safeImageURL(p.url))throw Error('Use an uploaded photo or HTTPS image URL.');return {url:p.url,caption:field(p.caption,'photo caption',200)}});

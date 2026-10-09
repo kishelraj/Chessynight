@@ -42,3 +42,9 @@ const saved=(await call('/api/tournaments')).data.tournaments.find(t=>t.id===dra
 for(const k of Object.keys(highlights))assert.deepEqual(saved[k],highlights[k]);
 for(const photos of [[{url:'javascript:alert(1)',caption:''}],Array(9).fill(highlights.photos[0]),'invalid'])assert.equal((await call('/api/admin/tournament',{...draft,details:{...draft.details,photos}},'events')).status,400);
 console.log('Tournament news, podium, photo persistence and photo validation passed.');
+
+for(const details of [{registrationOpens:'2098-12-01T10:00'},{manuallyFull:true}]){assert.equal((await call('/api/admin/tournament',{...draft,capacity:10,details:{...draft.details,...details}},'events')).status,200);assert.equal((await call('/api/tournaments')).data.tournaments.find(t=>t.id===draft.id).canRegister,false);assert.equal((await call('/api/tournaments/register',{...entry,email:'later@example.com'})).status,409)}
+assert.equal((await call('/api/admin/tournament',{...draft,capacity:10,details:{...draft.details,registrationOpens:'2099-02-01T10:00'}},'events')).status,400);
+assert.equal((await call('/api/admin/tournament',{...draft,capacity:10,details:{...draft.details,registrationOpens:'2020-01-01T10:00'}},'events')).status,200);
+assert.equal((await call('/api/tournaments')).data.tournaments.find(t=>t.id===draft.id).canRegister,true);
+console.log('Scheduled opening, manual full and reopening enforcement passed.');

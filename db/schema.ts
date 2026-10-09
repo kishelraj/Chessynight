@@ -6,3 +6,5 @@ export const posts = sqliteTable('posts', {id:text('id').primaryKey(), type:text
 
 export const registrations = sqliteTable('registrations', {id:text('id').primaryKey(),eventId:text('event_id').notNull(),name:text('name').notNull(),email:text('email').notNull(),created:integer('created').notNull()},t=>[uniqueIndex('idx_registrations_event_email').on(t.eventId,t.email)]);
 export const adminUsers = sqliteTable('admin_users', {id:text('id').primaryKey(),email:text('email').notNull(),accountUserId:text('account_user_id'),username:text('username').notNull(),role:text('role').notNull().default('viewer'),enabled:integer('enabled').notNull().default(1),created:integer('created').notNull(),updated:integer('updated').notNull()},t=>[uniqueIndex('idx_admin_users_email').on(t.email),index('idx_admin_users_role').on(t.role)]);
+
+export * from './lessons';
