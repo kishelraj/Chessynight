@@ -28,6 +28,6 @@ The preview runs at http://localhost:4173 using an in-memory test database. Prod
 
 The current live site is hosted by Sites at https://chessy-night-rebuilt.kishelraj.chatgpt.site. GitHub stores the source; a push does not automatically deploy the site. Production requires the existing D1 database and R2 photo storage bindings recorded in `.openai/hosting.json`.
 
-## Draft content
+## About and Contact
 
-The About and Contact views are local drafts and have not yet been published. Team cards use placeholder roles and photos. The founder section links to the supplied Instagram reference. The enquiry form currently has no delivery backend and must be connected before being used for real enquiries.
+The About and Contact views are published. Team cards use placeholder roles and photos. The founder section links to the supplied Instagram reference. The enquiry form opens WhatsApp with the visitor's message; the visitor reviews and sends it there.
