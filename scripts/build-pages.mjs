@@ -1,7 +1,8 @@
 import {readFile,writeFile,mkdir,copyFile} from 'node:fs/promises';
+import {renderPublic} from './render-pages.mjs';
 const backend='https://chessy-night.kishelraj.chatgpt.site';
 await mkdir('docs',{recursive:true});
-let html=await readFile('worker/page.html','utf8');
+let html=await renderPublic();
 html=html.replaceAll('"/chessynight-logo.png"','"./chessynight-logo.png"')
   .replace("from '/chess.js'","from './chess.js'")
   .replaceAll('href="/admin"','href="'+backend+'/admin"')
@@ -17,4 +18,3 @@ await copyFile('worker/chessynight-logo.png','docs/chessynight-logo.png');
 await copyFile('node_modules/chess.js/dist/esm/chess.js','docs/chess.js');
 await copyFile('worker/PIECE-LICENSE.md','docs/PIECE-LICENSE.md');
 console.log('GitHub Pages output ready in docs/');
-

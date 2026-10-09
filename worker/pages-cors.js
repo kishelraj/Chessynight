@@ -1,6 +1,7 @@
 // Only the public club APIs are shared with the GitHub Pages frontend.
 const pagesOrigin='https://kishelraj.github.io';
 const routes=new Map([
+  ['/api/tournaments','GET'],['/api/tournaments/register','POST'],
   ['/api/content','GET'],['/api/leaderboard','GET'],
   ['/api/register','POST'],['/api/start','POST'],
   ['/api/move','POST'],['/api/finish','POST'],
@@ -27,4 +28,3 @@ export async function withPagesCors(req,env,handler){
   for(const [key,value] of Object.entries(headers))output.headers.set(key,value);
   return output;
 }
-

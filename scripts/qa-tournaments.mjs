@@ -1,0 +1,22 @@
+import {createRequire} from 'node:module';
+const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE||'playwright');
+import {DatabaseSync} from 'node:sqlite';
+import {readFile,readdir} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import worker from '../dist/server/index.js';
+const sql=new DatabaseSync(':memory:');for(const file of (await readdir('drizzle')).filter(f=>f.endsWith('.sql')).sort())sql.exec(await readFile('drizzle/'+file,'utf8'));
+const DB={prepare(query){const st=sql.prepare(query);const bound=(a=[])=>({run:async()=>{const r=st.run(...a);return {meta:{changes:Number(r.changes)}}},first:async()=>st.get(...a)||null,all:async()=>({results:st.all(...a)})});return {...bound(),bind:(...a)=>bound(a)}}};
+const browser=await chromium.launch({channel:'msedge',headless:true});const errors=[];
+async function page(owner=false){const p=await browser.newPage();p.on('pageerror',e=>errors.push(e.message));await p.route('https://preview.test/**',async route=>{const r=route.request();const headers={...r.headers(),...(owner?{'oai-authenticated-user-id':'test-owner','oai-authenticated-user-email':'kishelraj@gmail.com'}:{})};const response=await worker.fetch(new Request(r.url(),{method:r.method(),headers,...(r.postData()?{body:r.postData()}:{})}),{DB});await route.fulfill({status:response.status,headers:Object.fromEntries(response.headers),body:Buffer.from(await response.arrayBuffer())})});return p}
+try{
+  const admin=await page(true);await admin.goto('https://preview.test/admin');await admin.getByRole('button',{name:'Tournaments',exact:true}).click();await admin.getByRole('button',{name:'New tournament',exact:true}).click();
+  const values={title:'Preview Rapid Tournament',venue:'Preview venue, Kuala Lumpur',start:'2099-01-01T10:00',checkIn:'2099-01-01T09:30',fee:'RM 25',capacity:'32',format:'Swiss',timeControl:'10+5',rounds:'5',eligibility:'Open to all levels',rules:'Please arrive 30 minutes before play.'};for(const [k,v] of Object.entries(values))await admin.locator('#t-'+k).fill(v);
+  await admin.locator('#t-published').check();await admin.locator('#t-open').check();await admin.getByRole('button',{name:'Save tournament',exact:true}).click();await admin.getByText('Tournament published.',{exact:true}).waitFor();
+  const publicPage=await page();await publicPage.goto('https://preview.test/');await publicPage.locator('#tournamentsNav').click();await publicPage.locator('article').filter({hasText:'Preview Rapid Tournament'}).getByRole('button',{name:'View tournament'}).click();await publicPage.locator('#playerName').fill('Preview Player');await publicPage.locator('#playerEmail').fill('preview@example.com');await publicPage.locator('[name=consent]').check();await publicPage.getByRole('button',{name:'Register for tournament'}).click();await publicPage.getByRole('heading',{name:'You’re on the list.'}).waitFor();
+  await admin.getByRole('button',{name:'Refresh players'}).click();await admin.getByRole('button',{name:'Check in',exact:true}).click();await admin.getByText('1 registered · 1 checked in',{exact:true}).waitFor();
+  for(const width of [1440,390]){for(const [name,p] of [['public',publicPage],['admin',admin]]){await p.setViewportSize({width,height:1000});await p.waitForTimeout(350);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,name+' overflow at '+width);await p.screenshot({path:'../tournament-'+name+'-'+width+'.png',fullPage:true})}}
+  // Puzzle selector and existing admin tabs still work after leaving tournaments.
+  await admin.locator('#tabPuzzles').click();assert.equal(await admin.locator('#tournamentArea').isVisible(),false);
+  await publicPage.locator('#playNav').click();await publicPage.locator('#nickname').waitFor();
+  assert.deepEqual(errors,[]);console.log('Browser: create, publish, register, check-in, navigation and 390/1440px layouts passed. Preview data exists only in memory.');
+}finally{await browser.close()}
