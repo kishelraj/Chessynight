@@ -1,4 +1,4 @@
-import {db,json,adminRole,rolePermissions,validDate} from './content.js';
+import {db,json,adminRole,rolePermissions,validDate,safeImageURL} from './content.js';
 
 function field(value,label,max,required=false){
   if(value==null&&!required)return '';
@@ -50,6 +50,10 @@ export async function tournamentAPI(req,env,path){
     b=await req.json();title=field(b.title,'title',120,true);venue=field(b.venue,'venue',200,true);startAt=malaysiaTime(b.start);capacity=Number(b.capacity);
     if(!Number.isInteger(capacity)||capacity<1||capacity>1000)throw Error('Capacity must be between 1 and 1,000.');
     const d=b.details||{};details={fee:field(d.fee,'entry fee',120,true),format:field(d.format,'format',120,true),timeControl:field(d.timeControl,'time control',120,true),rounds:Number(d.rounds),checkIn:d.checkIn?malaysiaTime(d.checkIn):null,eligibility:field(d.eligibility,'eligibility',500),rules:field(d.rules,'rules',5000),prizes:field(d.prizes,'prizes',1000),map:link(d.map),pairings:link(d.pairings),results:link(d.results)};
+    details.winner=field(d.winner,'winner name',120);details.runnerUp=field(d.runnerUp,'runner-up name',120);details.thirdPlace=field(d.thirdPlace,'third-place name',120);details.news=field(d.news,'tournament news',3000);
+    if(d.photos!==undefined&&!Array.isArray(d.photos))throw Error('Choose up to eight tournament photos.');
+    details.photos=(d.photos||[]).map(p=>{if(!p||!safeImageURL(p.url))throw Error('Use an uploaded photo or HTTPS image URL.');return {url:p.url,caption:field(p.caption,'photo caption',200)}});
+    if(details.photos.length>8)throw Error('Choose up to eight tournament photos.');
     if(!Number.isInteger(details.rounds)||details.rounds<1||details.rounds>30)throw Error('Enter between 1 and 30 rounds.');
     if(details.checkIn&&details.checkIn>startAt)throw Error('Check-in must be at or before the first round.');
     if(b.id&&(!/^[a-zA-Z0-9-]{1,80}$/.test(b.id)))throw Error('Invalid tournament.');

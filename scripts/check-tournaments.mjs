@@ -35,3 +35,10 @@ assert.equal((await call('/api/admin/tournament-entries?id='+draft.id,null,'owne
 await call('/api/admin/tournament',{...draft,capacity:10,registrationOpen:false},'events');assert.equal((await call('/api/tournaments/register',{...entry,email:'closed@example.com'})).status,409);
 await call('/api/admin/tournament',{...draft,capacity:10,start:'2020-01-01T10:00',details:{...draft.details,checkIn:''}},'events');assert.equal((await call('/api/tournaments/register',{...entry,email:'past@example.com'})).status,409);
 console.log('Tournament publishing, privacy, role enforcement, duplicate/capacity protection, closing rules, Pages CORS and check-in passed.');
+
+const highlights={winner:'Champion',runnerUp:'Runner-up',thirdPlace:'Third',news:'Club recap',photos:[{url:'/media/12345678-1234-1234-1234-123456789abc.webp',caption:'Podium'}]};
+assert.equal((await call('/api/admin/tournament',{...draft,details:{...draft.details,...highlights}},'events')).status,200);
+const saved=(await call('/api/tournaments')).data.tournaments.find(t=>t.id===draft.id).details;
+for(const k of Object.keys(highlights))assert.deepEqual(saved[k],highlights[k]);
+for(const photos of [[{url:'javascript:alert(1)',caption:''}],Array(9).fill(highlights.photos[0]),'invalid'])assert.equal((await call('/api/admin/tournament',{...draft,details:{...draft.details,photos}},'events')).status,400);
+console.log('Tournament news, podium, photo persistence and photo validation passed.');
