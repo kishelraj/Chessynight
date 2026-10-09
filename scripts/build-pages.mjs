@@ -1,10 +1,10 @@
 import {readFile,writeFile,mkdir,copyFile} from 'node:fs/promises';
-const backend='https://chessy-night-rebuilt.kishelraj.chatgpt.site';
+const backend='https://chessy-night.kishelraj.chatgpt.site';
 await mkdir('docs',{recursive:true});
 let html=await readFile('worker/page.html','utf8');
 html=html.replaceAll('"/chessynight-logo.png"','"./chessynight-logo.png"')
   .replace("from '/chess.js'","from './chess.js'")
-  .replace('href="/admin"','href="'+backend+'/admin"')
+  .replaceAll('href="/admin"','href="'+backend+'/admin"')
   .replace("fetch('/api/'+path,","fetch('"+backend+"/api/'+path,")
   .replace("method:body?'POST':'GET',headers:","credentials:'omit',method:body?'POST':'GET',headers:")
   .replace("location.origin+'/#event='","location.origin+location.pathname+'#event='")
