@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1791263187658,
+      "tag": "0000_third_bromley",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1791518451406,
+      "tag": "0001_square_phil_sheldon",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791518742637,
+      "tag": "0002_ancient_gateway",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1791527480780,
+      "tag": "0003_next_edwin_jarvis",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1791528207813,
+      "tag": "0004_thick_kingpin",
+      "breakpoints": true
+    }
+  ]
+}
