@@ -45,9 +45,10 @@ export async function lessonAPI(req,env,path){
   try{
     b=await req.json();title=field(b.title,'title',120,true);venue=field(b.venue,'venue',200,true);startAt=malaysiaTime(b.start);capacity=Number(b.capacity);
     if(!Number.isInteger(capacity)||capacity<1||capacity>1000)throw Error('Capacity must be between 1 and 1,000.');
-    const d=b.details||{};details={provisional:d.provisional===true,fee:field(d.fee,'lesson fee',120,true),teacher:field(d.teacher,'teacher name',120,true),teacherBio:field(d.teacherBio,'teacher introduction',1500),teacherPhoto:field(d.teacherPhoto,'teacher photo',2000),level:field(d.level,'level',30,true),duration:Number(d.duration),outcomes:field(d.outcomes,'learning outcomes',2000,true),outline:field(d.outline,'lesson outline',3000),prerequisites:field(d.prerequisites,'prerequisites',1000),bring:field(d.bring,'what to bring',1000),map:link(d.map)};
+    const d=b.details||{};details={classPhoto:field(d.classPhoto,'class photo',2000),provisional:d.provisional===true,fee:field(d.fee,'lesson fee',120,true),teacher:field(d.teacher,'teacher name',120,true),teacherBio:field(d.teacherBio,'teacher introduction',1500),teacherPhoto:field(d.teacherPhoto,'teacher photo',2000),level:field(d.level,'level',30,true),duration:Number(d.duration),outcomes:field(d.outcomes,'learning outcomes',2000,true),outline:field(d.outline,'lesson outline',3000),prerequisites:field(d.prerequisites,'prerequisites',1000),bring:field(d.bring,'what to bring',1000),map:link(d.map)};
     if(!['Beginner','Intermediate','Advanced'].includes(details.level))throw Error('Choose a class level.');
     if(!Number.isInteger(details.duration)||details.duration<15||details.duration>480)throw Error('Duration must be 15–480 minutes.');
+    if(details.classPhoto&&!safeImageURL(details.classPhoto))throw Error('Use an uploaded photo or HTTPS image URL.');
     if(details.teacherPhoto&&!safeImageURL(details.teacherPhoto))throw Error('Use an uploaded photo or HTTPS image URL.');
     if(b.id&&(!/^[a-zA-Z0-9-]{1,80}$/.test(b.id)))throw Error('Invalid lesson.');
   }catch(e){return json({error:e.message},400)}
