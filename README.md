@@ -26,7 +26,11 @@ The preview runs at http://localhost:4173 using an in-memory test database. Prod
 
 ## Publishing
 
-The current live site is hosted by Sites at https://chessy-night-rebuilt.kishelraj.chatgpt.site. GitHub stores the source; a push does not automatically deploy the site. Production requires the existing D1 database and R2 photo storage bindings recorded in `.openai/hosting.json`.
+The GitHub Pages frontend is generated into `docs/` by `node scripts/build-pages.mjs`. Configure Settings > Pages > Deploy from a branch > main > /docs. Once enabled, the address is https://kishelraj.github.io/Chessynight/. Rebuild and commit `docs/` whenever the public website changes.
+
+The backend remains at https://chessy-night-rebuilt.kishelraj.chatgpt.site for live events, registrations, puzzle scores, and owner administration at `/admin`. Its D1 database and R2 photo storage bindings are recorded in `.openai/hosting.json`. Backend changes require a separate Sites deployment. Public APIs allow the GitHub Pages origin without credentials; owner APIs stay restricted.
+
+Run `node scripts/check-pages.mjs` to check Pages paths and API access boundaries.
 
 ## About and Contact
 
