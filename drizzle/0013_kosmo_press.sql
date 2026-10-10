@@ -1,0 +1,3 @@
+-- One-time news seed. Admin edits are preserved on subsequent deployments.
+INSERT OR IGNORE INTO posts (id,type,title,body,date,image_url,link,details,photos,published,updated)
+VALUES ('kosmo-feature-2026-06-28','news','Good games. New friendships. CHESSYNIGHT in Kosmo!','From a small gathering to a growing community, Kosmo! explores how CHESSYNIGHT brings people together through relaxed games, conversation, and a shared love of chess.','2026-06-28','https://chessy-night.kishelraj.chatgpt.site/media/83867fcd-0dbc-4622-b89e-ce01bef60d20.webp','https://www.kosmo.com.my/2026/06/28/catur-santai-makin-ramai-sertai-komuniti-chessy-night/','{}','[]',1,1791648000000);
