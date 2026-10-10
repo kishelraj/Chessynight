@@ -23,7 +23,7 @@
 .club-home .feed-filters button:not(.selected):hover { color: var(--event-text); background: #303030; }
 .club-home .title-button { color: var(--event-text); font: inherit; }
 .club-home .text-button { color: var(--event-accent); }
-.event-card-utilities { display: none; }
+.event-card-utilities, .mobile-feature-register { display: none; }
 #postDialog { background: #151515; color: var(--event-text); border-color: var(--event-border); }
 #postDialog .dialog-head { background: #151515; }
 #postDialog .event-meta { color: var(--event-text); line-height: 1.6; }
@@ -55,7 +55,7 @@
   .club-home .next-up .event-details strong { font-weight: 400; }
   .club-home .next-up .event-labels, .club-home .next-up .mobile-event-fee, .club-home .next-up .desktop-registration { display: none; }
   .club-home .next-up .actions { display: block; margin: 12px 0 0; }
-  .club-home .next-up .actions .secondary { width: 100%; padding: 10px; min-height: 44px; }
+  .club-home .next-up .mobile-feature-register { display: block; width: 100%; padding: 10px; min-height: 44px; box-sizing: border-box; text-align: center; text-decoration: none; }
   .club-home .next-up .event-card-utilities { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; margin-top: 10px; }
   .club-home .next-up .event-card-utilities button, .club-home .next-up .event-card-utilities a { display: flex; min-width: 0; min-height: 50px; padding: 6px 2px; box-sizing: border-box; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 1px solid #555; border-radius: 4px; background: #171717; color: var(--event-text); font: 600 9px/1.15 Arial,sans-serif; text-align: center; text-decoration: none; cursor: pointer; }
   .club-home .next-up .event-card-utilities button:hover, .club-home .next-up .event-card-utilities a:hover { border-color: var(--event-accent); background: #252923; }
