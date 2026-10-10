@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS practice_sessions (id TEXT PRIMARY KEY, collection TEXT NOT NULL, title TEXT NOT NULL, nickname TEXT NOT NULL, snapshot TEXT NOT NULL, state TEXT NOT NULL, started INTEGER NOT NULL, updated INTEGER NOT NULL);

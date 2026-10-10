@@ -1,3 +1,4 @@
+import {practiceAPI} from './practice.js';
 import {pushAPI} from './push.js';
 import {isPagesRequest,withPagesCors} from './pages-cors.js';
 import {lessonAPI} from './lessons.js';
@@ -18,6 +19,7 @@ if(path==='/chess.js')return new Response(chessSource,{headers:{'Content-Type':'
 if(path==='/favicon.svg')return new Response('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#102b22"/><text x="10" y="50" font-size="50" fill="#e6bb69">♞</text></svg>',{headers:{'Content-Type':'image/svg+xml'}});
 if(path.startsWith('/api/lessons')||path.startsWith('/api/admin/lesson'))return await lessonAPI(req,env,path);
 if(path.startsWith('/api/tournaments')||path.startsWith('/api/admin/tournament'))return await tournamentAPI(req,env,path);
+if(path.startsWith('/api/practice/'))return await practiceAPI(req,env,path);
 if(path.startsWith('/api/push/')||path==='/api/admin/push')return await pushAPI(req,env,path);
 if(path.startsWith('/api/admin/'))return await adminAPI(req,env,path);
 if(path==='/api/content'){await seedClubEvent(env);const set=await currentSet(env);const sets=(await db(env).prepare('SELECT id,title,date FROM challenge_sets WHERE published=1 AND date<=? ORDER BY date DESC,updated DESC LIMIT 30').bind(today()).all()).results;const posts=(await db(env).prepare('SELECT * FROM posts WHERE published=1 AND date<=? ORDER BY date DESC,updated DESC LIMIT 100').bind(today()).all()).results;return json({set:{id:set.id,title:set.title,date:set.id==='woodpecker-puzzles'?'':set.date,count:set.puzzles.length,fen:set.puzzles[0].fen},sets:[...sets.map(s=>s.id==='woodpecker-puzzles'?{...s,date:''}:s),{id:'classic',title:'Classic challenge',date:''}],posts,admin:Boolean(await adminRole(req,env)),today:today()})}
