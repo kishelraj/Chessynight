@@ -2,13 +2,15 @@ import {isPagesRequest,withPagesCors} from './pages-cors.js';
 import {lessonAPI} from './lessons.js';
 import {tournamentAPI} from './tournaments.js';
 import {Chess} from 'chess.js';
-import {page,adminPage,chessSource,posterBase64,logoBase64} from './assets.js';
+import {page,adminPage,chessSource,posterBase64,logoBase64,ladiesPosterBase64,eventPosters} from './assets.js';
 import {json,db,isAdmin,adminRole,today,currentSet,classic,lineMove,adminAPI,rankingKey,seedClubEvent,registerEvent} from './content.js';
 const worker={async fetch(req,env){const url=new URL(req.url),path=url.pathname;try{
+if(path.startsWith('/posters/')){const name=path.slice(9);if(!Object.hasOwn(eventPosters,name))return new Response('Not found',{status:404});const poster=eventPosters[name];return new Response(Uint8Array.from(atob(poster.data),c=>c.charCodeAt(0)),{headers:{'Content-Type':poster.mime,'Cache-Control':'public,max-age=86400','X-Content-Type-Options':'nosniff'}})}
 if(req.method==='POST'){if(!req.headers.get('Content-Type')?.startsWith('application/json'))return json({error:'JSON required.'},415);if(req.headers.get('Origin')&&req.headers.get('Origin')!==url.origin&&!isPagesRequest(req))return json({error:'Request origin rejected.'},403);if(Number(req.headers.get('Content-Length'))>(path==='/api/admin/photo'?6000000:250000))return json({error:'Import too large.'},413)}
 if(path.startsWith('/media/')){const key=path.slice(7);if(!/^[a-f0-9-]{36}\.webp$/.test(key))return new Response('Not found',{status:404});if(!env.PHOTOS)return json({error:'Photo storage unavailable.'},503);const image=await env.PHOTOS.get(key);if(!image)return new Response('Not found',{status:404});return new Response(image.body,{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=86400','X-Content-Type-Options':'nosniff'}})}
 if(path==='/club-poster.webp'){const bytes=Uint8Array.from(atob(posterBase64),c=>c.charCodeAt(0));return new Response(bytes,{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=86400'}})}
 if(path==='/chessynight-logo.png'){const bytes=Uint8Array.from(atob(logoBase64),c=>c.charCodeAt(0));return new Response(bytes,{headers:{'Content-Type':'image/png','Cache-Control':'public,max-age=86400'}})}
+if(path==='/ladies-chessy-vol-2.png'){const bytes=Uint8Array.from(atob(ladiesPosterBase64),c=>c.charCodeAt(0));return new Response(bytes,{headers:{'Content-Type':'image/png','Cache-Control':'public,max-age=86400'}})}
 if(path==='/api/register'&&req.method==='POST')return await registerEvent(req,env);
 if(path==='/chess.js')return new Response(chessSource,{headers:{'Content-Type':'text/javascript'}});
 if(path==='/favicon.svg')return new Response('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#102b22"/><text x="10" y="50" font-size="50" fill="#e6bb69">♞</text></svg>',{headers:{'Content-Type':'image/svg+xml'}});

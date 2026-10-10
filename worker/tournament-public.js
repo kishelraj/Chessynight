@@ -27,3 +27,8 @@ function tournamentDetail(t){
   const form=document.querySelector('#tournamentSignup');if(form)form.onsubmit=async e=>{e.preventDefault();const button=e.submitter;button.disabled=true;const status=document.querySelector('#tournamentSignupStatus');status.textContent='Saving your registration…';try{const fields=Object.fromEntries(new FormData(form));const response=await api('tournaments/register',{...fields,tournamentId:t.id,consent:fields.consent==='on'});form.innerHTML='<h3>You’re on the list.</h3><p role="status">'+esc(response.message)+'</p><p>'+esc(t.title)+'<br>'+esc(tournamentDate(t.start_at))+' MYT<br>'+esc(t.venue)+'</p>'}catch(err){status.textContent=err.message;status.classList.add('error');button.disabled=false}};
 }
 document.querySelector('#tournamentsNav').onclick=tournamentsPage;
+async function openLinkedTournament(id){
+  await tournamentsPage();if(!document.querySelector('#tournamentContent'))return;
+  const button=[...document.querySelectorAll('[data-tournament]')].find(b=>b.dataset.tournament===id);
+  if(button)button.click();
+}

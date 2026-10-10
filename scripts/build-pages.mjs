@@ -15,6 +15,7 @@ html=html.replaceAll('"/chessynight-logo.png"','"./chessynight-logo.png"')
 await writeFile('docs/index.html',html);
 await writeFile('docs/.nojekyll','');
 await copyFile('worker/chessynight-logo.png','docs/chessynight-logo.png');
+await copyFile('worker/ladies-chessy-vol-2.png','docs/ladies-chessy-vol-2.png');
 await copyFile('node_modules/chess.js/dist/esm/chess.js','docs/chess.js');
 await copyFile('worker/PIECE-LICENSE.md','docs/PIECE-LICENSE.md');
 console.log('GitHub Pages output ready in docs/');

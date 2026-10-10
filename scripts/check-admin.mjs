@@ -4,13 +4,13 @@ const sql=new DatabaseSync(':memory:');for(const file of (await readdir('drizzle
 const DB={prepare(s){return {bind(...a){const st=sql.prepare(s);return {run:async()=>{const r=st.run(...a);return {meta:{changes:Number(r.changes)}}},first:async()=>st.get(...a)||null,all:async()=>({results:st.all(...a)})}},all:async()=>({results:sql.prepare(s).all()})}}};
 async function call(path,body,admin=false,extra={}){const req=new Request('https://example.com'+path,{method:body?'POST':'GET',headers:{'Content-Type':'application/json',...(admin?{'oai-authenticated-user-id':'owner','oai-authenticated-user-email':'kishelraj@gmail.com'}:{}),...extra},body:body?JSON.stringify(body):undefined});const r=await module.fetch(req,{DB});return {status:r.status,...(r.headers.get('Content-Type')?.includes('json')?await r.json():{text:await r.text(),location:r.headers.get('Location')})}}
 assert.equal((await call('/admin')).status,302);assert.equal((await call('/api/admin/list')).status,403);assert.equal((await call('/admin',null,true)).status,200);assert.equal((await call('/api/admin/list',null,false,{'oai-authenticated-user-id':'other','oai-authenticated-user-email':'other@example.com'})).status,403);
-const content=await call('/api/content');assert.equal(content.set.count,8);const date=content.today;
+const content=await call('/api/content');assert.equal(content.set.count,50);assert.equal(content.set.title,'Advanced');const date=content.today;
 const puzzle={title:'Back rank',fen:'6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1',solution:['e1e8']};
 assert.equal((await call('/api/admin/set',{title:'Invalid',date,puzzles:[{...puzzle,solution:['a1a8']}]},true)).status,400);
 assert.equal((await call('/api/admin/set',{title:'Cross origin',date,puzzles:[puzzle]},true,{Origin:'https://evil.example'})).status,403);
-let set=await call('/api/admin/set',{title:'Daily test',date,published:false,puzzles:[puzzle]},true);assert.equal((await call('/api/content')).set.id,'classic');
+let set=await call('/api/admin/set',{title:'Daily test',date,published:false,puzzles:[puzzle]},true);assert.equal((await call('/api/content')).set.id,'woodpecker-puzzles');
 await call('/api/admin/set',{id:set.id,title:'Daily test',date,published:true,puzzles:[puzzle]},true);assert.equal((await call('/api/content')).set.id,set.id);
-await call('/api/admin/set',{title:'Future',date:'2099-01-01',published:true,puzzles:[puzzle]},true);assert.equal((await call('/api/content')).sets.length,2);
+await call('/api/admin/set',{title:'Future',date:'2099-01-01',published:true,puzzles:[puzzle]},true);assert.equal((await call('/api/content')).sets.length,3);
 const run=await call('/api/start',{nickname:'Tester',challenge:set.id});assert.equal(run.puzzles[0].solution,undefined);
 // Editing a set must not rewrite an in-progress puzzle.
 await call('/api/admin/set',{id:set.id,title:'Daily revised',date,published:false,puzzles:[{title:'Queen',fen:'7k/6pp/5KQ1/8/8/8/8/8 w - - 0 1',solution:['g6g7']}]},true);
@@ -21,14 +21,14 @@ const multi={title:'Opening tactic',fen:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQ
 const mset=await call('/api/admin/set',{title:'Multi',date,published:true,puzzles:[multi]},true);const mr=await call('/api/start',{nickname:'Multi tester',challenge:mset.id});const first=await call('/api/move',{id:mr.id,index:0,move:'e2e4',request:'multi1'});assert.equal(first.done,false);assert.ok(first.fen.includes('4p3'));assert.equal((await call('/api/move',{id:mr.id,index:0,move:'g1f3',request:'multi2'})).solved,true);
 let skip=await call('/api/start',{nickname:'Skip',challenge:mset.id});assert.equal((await call('/api/move',{id:skip.id,index:0,skip:true})).failed,true);assert.equal((await call('/api/finish',{id:skip.id})).score,0);
 assert.equal((await call('/api/leaderboard?challenge='+mset.id)).rows.length,1); // Multi not finished; only Skip is ranked.
-const post=await call('/api/admin/post',{type:'event',title:'Club night',body:'Come play!',date,eventDate:date+'T19:30',venue:'PJ',link:'https://example.com/event',published:true},true);assert.equal(post.status,200);assert.equal((await call('/api/content')).posts.length,2);
+const post=await call('/api/admin/post',{type:'event',title:'Club night',body:'Come play!',date,eventDate:date+'T19:30',venue:'PJ',link:'https://example.com/event',published:true},true);assert.equal(post.status,200);assert.equal((await call('/api/content')).posts.length,content.posts.length+1);
 assert.equal((await call('/api/admin/post',{type:'news',title:'Bad link',body:'Test',date,link:'javascript:alert(1)',published:true},true)).status,400);
-await call('/api/admin/post',{id:post.id,type:'event',title:'Club night',body:'Draft',date,eventDate:date+'T19:30',published:false},true);assert.equal((await call('/api/content')).posts.length,1);
+await call('/api/admin/post',{id:post.id,type:'event',title:'Club night',body:'Draft',date,eventDate:date+'T19:30',published:false},true);assert.equal((await call('/api/content')).posts.length,content.posts.length);
 for(const [file,target] of [['page.html','public'],['admin.html','admin']]){const html=await readFile('worker/'+file,'utf8');const {tmpdir}=await import('node:os');const {join}=await import('node:path');await writeFile(join(tmpdir(),'chess-'+target+'.mjs'),html.split('<script type="module">')[1].split('</script>')[0])}
 console.log('Owner authorization, drafts, scheduled releases, validation, immutable attempts, multi-move puzzles, safe retries, leaderboards, and event publishing passed.');
 
 // Native event registration must remain private, deduplicated and date gated.
-const featured=(await call('/api/content')).posts.find(p=>p.id==='subak-2026-10-09');assert.equal(featured.image_url,'/club-poster.webp');assert.equal(featured.end_date,'2026-10-10T00:00');
+const featured=(await call('/api/content')).posts.find(p=>p.id==='subak-2026-10-09');assert.equal(featured.image_url,'https://chessy-night.kishelraj.chatgpt.site/posters/subak.jpg');assert.equal(featured.end_date,'2026-10-10T00:00');
 const upcoming=await call('/api/admin/post',{type:'event',title:'Upcoming signup test',body:'An event',date,eventDate:'2099-10-09T19:30',endDate:'2099-10-09T22:00',venue:'PJ',imageUrl:'https://example.com/poster.jpg',published:true},true);
 const signup={eventId:upcoming.id,name:'Chess Player',email:'player@example.com',consent:true};
 assert.equal((await call('/api/register',{...signup,consent:false})).status,400);
@@ -62,3 +62,9 @@ assert.equal((await call('/api/admin/post',{type:'event',title:'Unsafe photo',bo
 assert.equal((await call('/api/admin/post',{type:'event',title:'Unsafe map',body:'Test',date,eventDate:'2099-10-09T19:30',details:{map:'javascript:alert(1)'}},true)).status,400);
 assert.ok(html.includes('beginnerWelcome()+'));assert.ok(html.includes('photoGallery(content.posts)'));
 console.log('Event information, beginner section, image upload authorization, photo storage and safe galleries passed.');
+
+
+
+
+
+
