@@ -11,5 +11,6 @@ export async function renderAdmin(publicPage){
   const theme=publicPage.match(/<style>([\s\S]*?)<\/style>/)[1];
   return (await readFile('worker/admin.html','utf8'))
     .replace(/<style id="club-theme">[\s\S]*?<\/style>/,'<style id="club-theme">'+theme+'</style>')
+    .replace('/* VISUAL_PUZZLE_EDITOR */',await readFile('worker/puzzle-editor.js','utf8'))
     .replace('/* TOURNAMENT_ADMIN */',(await readFile('worker/tournament-admin.js','utf8'))+'\n'+await readFile('worker/lesson-admin.js','utf8'));
 }
