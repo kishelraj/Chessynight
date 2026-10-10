@@ -102,3 +102,21 @@
   .club-home .upcoming-feed .upcoming-event-row .card-image { width: 76px; height: 108px; }
   .club-home .upcoming-feed .upcoming-event-row h3 { font-size: 18px; }
 }
+
+/* The navigation order follows the same reading and keyboard order on each layout. */
+@media (max-width:640px) {
+  header nav[aria-label="Main navigation"] { grid-template-columns: repeat(6,minmax(0,1fr)); padding-left: 5px; padding-right: 5px; }
+  header nav[aria-label="Main navigation"] #rankNav,
+  header nav[aria-label="Main navigation"] #lessonsNav,
+  header nav[aria-label="Main navigation"] #moreNav { display: block!important; }
+  header nav[aria-label="Main navigation"] #aboutNav,
+  header nav[aria-label="Main navigation"] #contactNav,
+  header nav[aria-label="Main navigation"] #adminLink { display: none!important; }
+  header nav[aria-label="Main navigation"] button { min-width: 0; padding-left: 1px; padding-right: 1px; font-size: 10px; letter-spacing: -.02em; overflow: hidden; }
+  header nav[aria-label="Main navigation"] #rankNav { white-space: normal; }
+  header nav[aria-label="Main navigation"] button:before { font-size: 18px; }
+}
+@media (min-width:641px) {
+  header nav[aria-label="Main navigation"] #lessonsNav,
+  header nav[aria-label="Main navigation"] #moreNav { display: none!important; }
+}
