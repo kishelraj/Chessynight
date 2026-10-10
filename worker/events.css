@@ -1,0 +1,104 @@
+/* Event media never crops posters. Keep event typography and surfaces consistent. */
+#moreNav:before { content: '•••'; }
+.mobile-event-fee, .event-month-heading, .mobile-sticky-register { display: none; }
+.club-home, #postDialog { --event-surface: #1b1b1b; --event-border: #444; --event-text: #f5f5f0; --event-muted: #bdbdb7; --event-accent: #d5ff5f; font-family: Arial, sans-serif; }
+.club-home h1, .club-home h2, .club-home h3, #postDialog h2, #postDialog h3 { font-family: Arial, sans-serif; font-weight: 800; }
+.club-home button, .club-home input, #postDialog button, #postDialog input { font-family: inherit; }
+.event-labels { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.event-labels span { border: 1px solid #555; border-radius: 4px; color: var(--event-muted); font: 500 12px/1.3 Arial,sans-serif; padding: 4px 7px; }
+.club-home .featured-event { background: var(--event-surface); color: var(--event-text); border-color: var(--event-border); border-radius: 8px; }
+.club-home .feature-copy h1, .club-home .feature-copy .event-details p, .club-home .feature-copy .event-details strong { color: var(--event-text); }
+.club-home .feature-copy p, .club-home .feature-copy .map-link, .club-home .feature-copy .text-button, .club-home .feature-copy .event-facts dt, .club-home .feature-copy .countdown, .club-home .feature-copy .countdown strong { color: var(--event-muted); }
+.club-home .feature-copy .eyebrow { color: var(--event-accent); }
+.club-home .feature-copy .eyebrow:before { background: var(--event-accent); }
+.club-home .primary, #postDialog .primary { background: var(--event-accent); color: #111; border: 1px solid var(--event-accent); border-radius: 4px; font: 700 14px/1.3 Arial,sans-serif; min-height: 44px; }
+.club-home .primary:hover, #postDialog .primary:hover { background: #e4ff9f; border-color: #e4ff9f; }
+.club-home .secondary, #postDialog .secondary { color: var(--event-text); background: transparent; border: 1px solid #666; border-radius: 4px; min-height: 44px; font: 600 14px/1.3 Arial,sans-serif; }
+.club-home .secondary:hover, #postDialog .secondary:hover { color: var(--event-text); background: #303030; }
+.club-home .registration-note { color: var(--event-muted); font-size: 12px; line-height: 1.4; }
+.club-home .poster-button, .club-home .card-image { background: #141414; }
+.club-home .feature-poster, .club-home .card-image img { object-fit: contain; object-position: center; }
+.club-home .feed-filters button { color: var(--event-muted); font: 600 13px/1.3 Arial,sans-serif; }
+.club-home .feed-filters button.selected { color: #111; background: var(--event-accent); border-color: var(--event-accent); }
+.club-home .feed-filters button:not(.selected):hover { color: var(--event-text); background: #303030; }
+.club-home .title-button { color: var(--event-text); font: inherit; }
+.club-home .text-button { color: var(--event-accent); }
+#postDialog { background: #151515; color: var(--event-text); border-color: var(--event-border); }
+#postDialog .dialog-head { background: #151515; }
+#postDialog .event-meta { color: var(--event-text); line-height: 1.6; }
+#postDialog .post-body, #postDialog .event-enquiry p, #postDialog small { color: var(--event-muted); }
+#postDialog .event-dialog-summary { background: var(--event-surface); border: 1px solid var(--event-border); border-radius: 6px; padding: 18px; margin: 16px 0 20px; }
+#postDialog .mobile-event-fee { display: block; font-size: 14px; color: var(--event-text); margin: 0 0 18px; }
+#postDialog .mobile-event-fee span { display: block; margin-bottom: 4px; font-size: 12px; color: var(--event-muted); }
+#postDialog .dialog-registration { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid var(--event-border); padding-top: 16px; }
+#postDialog .dialog-registration span { font-size: 13px; color: var(--event-muted); }
+#postDialog .dialog-registration a { text-decoration: none; }
+#postDialog .dialog-poster { display: block; width: 100%; height: auto; max-height: none; object-fit: contain; background: #141414; border-radius: 4px; }
+#postDialog .signup-section { margin: 18px 0 0; padding: 18px 0 0; border-color: var(--event-border); }
+#postDialog .signup-section h3 { font: 700 22px/1.25 Arial,sans-serif; }
+#postDialog .signup-success { background: #252923; }
+#postDialog input:not([type=checkbox]) { width: 100%; box-sizing: border-box; font: 400 16px/1.4 Arial,sans-serif; background: #111; border-color: #666; color: var(--event-text); }
+#postDialog .event-facts { border-color: var(--event-border); }
+#postDialog .event-facts dt { color: var(--event-muted); }
+#postDialog .event-facts dd { color: var(--event-text); }
+
+@media (max-width:760px) {
+  .club-home .next-up { display: grid; grid-template-columns: 104px minmax(0,1fr); gap: 16px; align-items: start; padding: 16px; }
+  .club-home .next-up .poster-button { order: -1; display: block; width: 104px; height: 148px; min-height: 0; padding: 4px; border: 1px solid #333; border-radius: 4px; align-self: start; }
+  .club-home .next-up .feature-poster { width: 100%; height: 100%; max-height: none; object-fit: contain; }
+  .club-home .next-up .feature-copy { min-width: 0; padding: 0; }
+  .club-home .next-up .feature-copy h1 { font-size: 22px; line-height: 1.15; letter-spacing: -.025em; margin: 8px 0 12px; overflow-wrap: anywhere; }
+  .club-home .next-up .event-details { margin: 0; padding: 0; border: 0; }
+  .club-home .next-up .event-details p { font-size: 13px; line-height: 1.5; margin: 0 0 6px; }
+  .club-home .next-up .event-details strong { font-weight: 400; }
+  .club-home .next-up .event-labels, .club-home .next-up .mobile-event-fee, .club-home .next-up .desktop-registration { display: none; }
+  .club-home .next-up .actions { display: block; margin: 12px 0 0; }
+  .club-home .next-up .actions .secondary { width: 100%; padding: 10px; min-height: 44px; }
+  .club-home .next-up .event-feature-meta { display: none; }
+  .club-home .next-up:has(.event-feature-meta) { grid-template-columns: 1fr; }
+  .club-home .event-month-heading { display: block; font: 700 18px/1.3 Arial,sans-serif; margin: 6px 0 14px; padding-bottom: 12px; border-bottom: 1px solid var(--event-border); }
+  .club-home .club-grid.upcoming-feed { display: block; overflow: visible; padding: 0; }
+  .club-home .upcoming-feed .event-month-heading:not(:first-child) { margin-top: 28px; }
+  .club-home .upcoming-feed>.upcoming-event-row { display: grid; grid-template-columns: 96px minmax(0,1fr); gap: 14px; padding: 14px; margin-bottom: 14px; min-height: 0; border-radius: 8px; align-items: start; }
+  .club-home .upcoming-feed .upcoming-event-row .card-image { width: 96px; height: 136px; min-height: 0; padding: 4px; border: 1px solid #333; border-radius: 4px; align-self: start; }
+  .club-home .upcoming-feed .upcoming-event-row .card-image img { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .club-home .upcoming-feed .upcoming-event-row .card-copy { padding: 0; min-width: 0; }
+  .club-home .upcoming-feed .upcoming-event-row .card-top, .club-home .upcoming-feed .upcoming-event-row .card-excerpt, .club-home .upcoming-feed .upcoming-event-row .mobile-event-fee { display: none; }
+  .club-home .upcoming-feed .upcoming-event-row .event-labels { margin: 0 0 8px; }
+  .club-home .upcoming-feed .upcoming-event-row .event-labels span { font-size: 11px; padding: 3px 6px; }
+  .club-home .upcoming-feed .upcoming-event-row h3 { font: 700 19px/1.25 Arial,sans-serif; letter-spacing: -.02em; margin: 0 0 10px; overflow-wrap: anywhere; }
+  .club-home .upcoming-feed .upcoming-event-row .card-meta { font-size: 13px; line-height: 1.5; color: var(--event-muted); margin: 0 0 10px; }
+  .club-home .upcoming-feed .upcoming-event-row .actions { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0; align-items: center; }
+  .club-home .upcoming-feed .upcoming-event-row .registration-action { flex: 1 0 100%; gap: 6px; }
+  .club-home .upcoming-feed .upcoming-event-row .primary { display: block; width: 100%; box-sizing: border-box; padding: 10px; }
+  .club-home .upcoming-feed .upcoming-event-row .text-button { font-size: 13px; min-height: 44px; padding: 10px 0; }
+  .club-home .upcoming-feed>.upcoming-event-row:not(:has(.card-image)) { grid-template-columns: 1fr; }
+  .club-home .past-feed { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 0; }
+  .club-home .past-feed>.past-event-card { flex: 0 0 90%; scroll-snap-align: start; border-radius: 8px; }
+  .club-home .past-feed .past-event-card .card-image { height: 270px; padding: 10px; }
+  .club-home .past-feed .past-event-card .card-image img { width: 100%; height: 100%; object-fit: contain; }
+  .club-home .past-feed .past-event-card .card-copy { padding: 18px; }
+  .club-home .past-feed .past-event-card h3 { font: 700 23px/1.2 Arial,sans-serif; margin: 12px 0; }
+  .club-home .past-feed .past-event-card .card-meta { font-size: 14px; color: var(--event-muted); }
+  .club-home .past-feed .past-event-card .mobile-event-fee, .club-home .past-feed .past-event-card .card-excerpt { display: none; }
+  .club-home .past-feed .past-event-card .actions { margin-top: 16px; }
+  .club-home .past-feed .past-event-card .text-button { width: 100%; min-height: 44px; box-sizing: border-box; text-align: center; border: 1px solid #666; border-radius: 4px; text-decoration: none; font-size: 14px; padding: 12px; }
+  #postDialog.event-sheet { position: fixed; inset: auto 0 0; margin: 0; width: 100%; max-width: none; max-height: 90dvh; border-radius: 18px 18px 0 0; padding: 20px 20px calc(96px + env(safe-area-inset-bottom)); box-sizing: border-box; }
+  #postDialog.event-sheet .dialog-head { position: sticky; top: -20px; z-index: 3; padding: 12px 0; margin-bottom: 16px; border-bottom: 1px solid var(--event-border); }
+  #postDialog.event-sheet h2 { font-size: 26px; line-height: 1.15; letter-spacing: -.025em; margin: 0 0 16px; }
+  #postDialog.event-sheet .event-dialog-summary { padding: 16px; }
+  #postDialog.event-sheet .event-meta { font-size: 15px; margin-top: 0; }
+  #postDialog.event-sheet .post-body { font-size: 15px; line-height: 1.65; }
+  #postDialog.event-sheet .mobile-sticky-register { display: block; position: fixed; z-index: 5; inset: auto 0 0; padding: 12px 20px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--event-border); background: #151515; }
+  #postDialog.event-sheet .mobile-sticky-register .primary { display: block; width: 100%; box-sizing: border-box; text-align: center; text-decoration: none; padding: 12px; }
+  #postDialog .consent { font-size: 14px; line-height: 1.5; }
+  #postDialog .registration-closed { display: block; margin-bottom: 14px; color: var(--event-muted); font-size: 12px; }
+}
+@media (max-width:360px) {
+  .club-home .next-up { grid-template-columns: 80px minmax(0,1fr); gap: 12px; padding: 12px; }
+  .club-home .next-up .poster-button { width: 80px; height: 114px; }
+  .club-home .next-up .feature-copy h1 { font-size: 20px; }
+  .club-home .upcoming-feed>.upcoming-event-row { grid-template-columns: 76px minmax(0,1fr); gap: 12px; padding: 12px; }
+  .club-home .upcoming-feed .upcoming-event-row .card-image { width: 76px; height: 108px; }
+  .club-home .upcoming-feed .upcoming-event-row h3 { font-size: 18px; }
+}

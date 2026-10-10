@@ -1,6 +1,7 @@
 import {readFile} from 'node:fs/promises';
 export async function renderPublic(){
   return (await readFile('worker/page.html','utf8'))
+    .replace('/* EVENT_LAYOUT_STYLES */',await readFile('worker/events.css','utf8'))
     .replace('/* TOURNAMENT_STYLES */',(await readFile('worker/tournaments.css','utf8'))+'\n'+await readFile('worker/lessons.css','utf8'))
     .replace('/* GALLERY_NAVIGATION */',await readFile('worker/gallery-navigation.js','utf8'))
     .replace('/* PRACTICE_PUBLIC */',await readFile('worker/practice-public.js','utf8'))
