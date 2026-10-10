@@ -43,6 +43,7 @@
 #postDialog .event-facts dd { color: var(--event-text); }
 
 @media (max-width:760px) {
+  .club-home .beginner-welcome { display: none; }
   .club-home .next-up { display: grid; grid-template-columns: 104px minmax(0,1fr); gap: 16px; align-items: start; padding: 16px; }
   .club-home .next-up .poster-button { order: -1; display: block; width: 104px; height: 148px; min-height: 0; padding: 4px; border: 1px solid #333; border-radius: 4px; align-self: start; }
   .club-home .next-up .feature-poster { width: 100%; height: 100%; max-height: none; object-fit: contain; }
