@@ -19,3 +19,5 @@ await copyFile('worker/ladies-chessy-vol-2.png','docs/ladies-chessy-vol-2.png');
 await copyFile('node_modules/chess.js/dist/esm/chess.js','docs/chess.js');
 await copyFile('worker/PIECE-LICENSE.md','docs/PIECE-LICENSE.md');
 console.log('GitHub Pages output ready in docs/');
+
+for(const name of ['sw.js','manifest.webmanifest','app-icon-192.png','app-icon-512.png'])await copyFile('worker/'+name,'docs/'+name);

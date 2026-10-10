@@ -3,6 +3,7 @@ const pagesOrigin='https://kishelraj.github.io';
 const routes=new Map([
   ['/api/lessons','GET'],['/api/lessons/register','POST'],
   ['/api/tournaments','GET'],['/api/tournaments/register','POST'],
+  ['/api/push/config','GET'],['/api/push/latest','GET'],['/api/push/subscribe','POST'],
   ['/api/content','GET'],['/api/leaderboard','GET'],
   ['/api/register','POST'],['/api/start','POST'],
   ['/api/move','POST'],['/api/finish','POST'],
